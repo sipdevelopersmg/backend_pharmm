@@ -1,0 +1,40 @@
+﻿version: '3.8'
+
+services:
+  pharmm_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: his/pharmm_api:${BUILD_DATE}.${BUILD_VERSION}
+    container_name: pharmm_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=Server=dbpharmm;Port=5432;Database=pharmm;User Id=admin;Password=Admin123_;"
+      - "ServerIp=128.199.133.137"
+      - TZ=Asia/Bangkok
+    ports:
+      - "5001:80"
+    tty: true
+    networks: 
+      - dbpharmm-network        
+      - api-network
+      - rabbit-network
+      - sagamachine-network
+      - seq-network
+    volumes:
+      - pharmm_data:/home/his/pharmm_data
+networks:
+  dbpharmm-network:
+    external: true
+  api-network:
+    external: true
+  rabbit-network:
+    external: true
+  sagamachine-network:
+    external: true
+  seq-network:
+    external: true
+volumes:
+  pharmm_data: 
+    external: true
+    name: pharmm_data
