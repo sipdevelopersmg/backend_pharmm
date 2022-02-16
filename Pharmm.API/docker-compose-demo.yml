@@ -10,7 +10,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings:ConnectionString=Server=dbpharmm;Port=5432;Database=pharmm;User Id=admin;Password=Admin123_;"
-      - "ServerIp=128.199.133.137"
+      - "ServerIp=134.209.102.123"
       - TZ=Asia/Bangkok
     ports:
       - "5001:80"
