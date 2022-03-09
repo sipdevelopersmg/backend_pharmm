@@ -141,6 +141,24 @@ namespace Pharmm.API.Dao.Setup
         #region Setup Obat Detail
 
 
+        public async Task<phar_setup_obat_detail> GetPharSetupObatDetailAktifByIdItemAndTglBerlakuWithLock(int _id_item,
+            DateTime _tgl_berlaku)
+        {
+            try
+            {
+                return await this.db.QuerySPtoSingle<phar_setup_obat_detail>(
+                    "phar_setup_obat_detail_getby_iditem_tglberlaku_lock", new
+                    {
+                        _id_item,
+                        _tgl_berlaku
+                    });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
         public async Task<phar_setup_obat_detail> GetPharSetupObatDetailAktifByIdItemWithLock(int _id_item)
         {
@@ -248,6 +266,29 @@ namespace Pharmm.API.Dao.Setup
             }
         }
 
+        public async Task<short> AddPharSetupObatDetailFromBarang(phar_setup_obat_detail_insert_from_barang data)
+        {
+            try
+            {
+                return await this.db.executeScalarSp<Int16>("phar_setup_obat_detail_Insert",
+                    new
+                    {
+                        _id_item = data.id_item,
+                        _harga_netto_apotek = data.harga_netto_apotek,
+                        _prosentase_profit = data.prosentase_profit,
+                        _prosentase_ppn = data.prosentase_ppn,
+                        _harga_jual_apotek = data.harga_jual_apotek,
+                        _tgl_berlaku = data.tgl_berlaku,
+                        _tgl_berakhir = data.tgl_berakhir,
+                        _user_created = data.user_created
+                    });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<short> AddPharSetupObatDetailFromSetupItem(phar_setup_obat_detail_insert_from_barang data)
         {
             try
@@ -288,6 +329,28 @@ namespace Pharmm.API.Dao.Setup
                 throw;
             }
         }
+
+        public async Task<short> UpdatePharSetupObatDetail(phar_setup_obat_detail_update data)
+        {
+            try
+            {
+                return await this.db.executeScalarSp<short>("phar_setup_obat_detail_update",
+                    new
+                    {
+                        _id_obat_detail = data.id_obat_detail,
+                        _harga_netto_apotek = data.harga_netto_apotek,
+                        _prosentase_profit = data.prosentase_profit,
+                        _prosentase_ppn = data.prosentase_ppn,
+                        _harga_jual_apotek = data.harga_jual_apotek,
+                        _user_edited = data.user_edited
+                    });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
         #endregion
     }

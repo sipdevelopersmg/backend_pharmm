@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Pharmm.API.ServiceCollections
 {
-    public static class ServicesExtensions
+    public static partial class ServicesExtensions
     {
 
         public static void AddServices(this IServiceCollection services, IConfiguration Configuration)

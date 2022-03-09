@@ -204,47 +204,43 @@ namespace Pharmm.API.Services.Setup
                             {
                                 foreach (var detail in data.obat.details)
                                 {
+                                    var detailId = (short)0;
                                     detail.user_created = data.user_created;
                                     detail.id_item = inputObat;
-                                    var cekHargaAktif = await this._obatDao.GetPharSetupObatDetailAktifByIdItem((long)detail.id_item);
+                                    var cekHargaExistingAktif = await this._obatDao.GetPharSetupObatDetailAktifByIdItemAndTglBerlakuWithLock((int)detail.id_item,
+                                     detail.tgl_berlaku);
 
-                                    //jika ada harga obat yg masih aktif
-                                    if (cekHargaAktif is not null)
+
+                                    if (cekHargaExistingAktif is not null)
                                     {
-                                        //parameter untuk mengupdate harga obat menjadi non aktif
-                                        var ubahHarga = new phar_setup_obat_detail_update_status
+
+                                        var paramUpdate = new phar_setup_obat_detail_update
                                         {
-                                            id_obat_detail = cekHargaAktif.id_obat_detail,
-                                            user_edited = data.user_created
+                                            id_obat_detail = (long)cekHargaExistingAktif.id_obat_detail,
+                                            harga_jual_apotek = (decimal)detail.harga_jual_apotek,
+                                            harga_netto_apotek = detail.harga_netto_apotek,
+                                            prosentase_ppn = detail.prosentase_ppn,
+                                            prosentase_profit = detail.prosentase_profit,
+                                            user_edited = detail.user_created
                                         };
 
-                                        //nonaktifkan harga sebelumnya
-                                        var stopHargaAktif = await this._obatDao.UpdateStatusToDeactivePharSetupObatDetail(ubahHarga);
+                                        var updateDetail = await this._obatDao.UpdatePharSetupObatDetail(paramUpdate);
 
-                                        if (stopHargaAktif <= 0)
+                                        if (updateDetail <= 0)
                                         {
                                             this._db.rollBackTrans();
-                                            return (false, "Gagal menonaktifkan harga sebelumnya");
-
-                                            throw new Exception("Gagal menonaktifkan harga sebelumnya");
+                                            return (false, $"Gagal merubah data");
                                         }
                                     }
-
-                                    //rumus harga jual
-                                    detail.harga_jual_apotek = detail.harga_netto_apotek
-                                        + (detail.prosentase_profit / 100 * detail.harga_netto_apotek)
-                                        + (detail.prosentase_ppn / 100 * (detail.harga_netto_apotek + (detail.prosentase_profit / 100 * detail.harga_netto_apotek)));
-
-                                    var detailId = await this._obatDao.AddPharSetupObatDetailFromSetupItem(detail);
-
-                                    if (detailId <= 0)
+                                    else
                                     {
-                                        if (cekHargaAktif is not null)
+
+                                        detailId = await this._obatDao.AddPharSetupObatDetailFromBarang(detail);
+
+                                        if (detailId <= 0)
                                         {
                                             this._db.rollBackTrans();
-                                            return (false, "Gagal menonaktifkan harga sebelumnya");
-
-                                            throw new Exception("Gagal merubah harga sebelumnya");
+                                            return (false, $"Gagal menambahkan harga jual");
                                         }
                                     }
                                 }
@@ -254,8 +250,6 @@ namespace Pharmm.API.Services.Setup
                         {
                             this._db.rollBackTrans();
                             return (false, "Gagal insert ke tabel obat");
-
-                            throw new Exception("Gagal insert ke tabel obat");
                         }
                     }
                 }

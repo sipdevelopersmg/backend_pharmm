@@ -26,7 +26,7 @@ namespace Pharmm.API.Services.Setup
         Task<List<phar_setup_obat_detail>> GetAllPharSetupObatDetailByIdAndParams(int id_item, List<ParameterSearchModel> param);
 
         Task<List<phar_setup_obat_detail>> GetAllPharSetupObatDetail();
-        Task<short> AddPharSetupObatDetail(phar_setup_obat_detail_insert data);
+        Task<(bool, long, string)> AddPharSetupObatDetail(phar_setup_obat_detail_insert data);
         //Task<short> AddPharSetupObatDetailMultiple(List<phar_setup_obat_detail_insert> data);
         Task<short> UpdateStatusToDeactivePharSetupObatDetail(phar_setup_obat_detail_update_status data);
 
@@ -159,48 +159,70 @@ namespace Pharmm.API.Services.Setup
             }
         }
 
-        public async Task<short> AddPharSetupObatDetail(phar_setup_obat_detail_insert data)
+        public async Task<(bool, long, string)> AddPharSetupObatDetail(phar_setup_obat_detail_insert data)
         {
             this._db.beginTransaction();
             try
             {
-                var cekHargaAktif = await this._dao.GetPharSetupObatDetailAktifByIdItemWithLock((int)data.id_item);
+                var headerId = (short)0;
+                var cekHargaExistingAktif = await this._dao.GetPharSetupObatDetailAktifByIdItemAndTglBerlakuWithLock((int)data.id_item,
+                 data.tgl_berlaku);
 
-                if (cekHargaAktif is not null)
+                if (cekHargaExistingAktif is not null)
                 {
-                    //parameter untuk mengupdate harga obat menjadi non aktif
-                    var ubahHarga = new phar_setup_obat_detail_update_status
+                    ////parameter untuk mengupdate harga obat menjadi non aktif
+                    //var ubahHarga = new phar_setup_obat_detail_update_status
+                    //{
+                    //    id_obat_detail = cekHargaAktif.id_obat_detail,
+                    //    tgl_berakhir = data.tgl_berlaku,
+                    //    user_edited = data.user_created
+                    //};
+
+                    //var stopHargaAktif = await this._dao.UpdateStatusToDeactivePharSetupObatDetail(ubahHarga);
+
+                    //if(stopHargaAktif <= 0)
+                    //{
+                    //    throw new Exception("Gagal menonaktifkan harga sebelumnya");
+                    //}
+
+                    var paramUpdate = new phar_setup_obat_detail_update
                     {
-                        id_obat_detail = cekHargaAktif.id_obat_detail,
-                        tgl_berakhir = data.tgl_berlaku,
+                        id_obat_detail = (long)cekHargaExistingAktif.id_obat_detail,
+                        harga_jual_apotek = (decimal)data.harga_jual_apotek,
+                        harga_netto_apotek = data.harga_netto_apotek,
+                        prosentase_ppn = data.prosentase_ppn,
+                        prosentase_profit = data.prosentase_profit,
                         user_edited = data.user_created
                     };
 
-                    var stopHargaAktif = await this._dao.UpdateStatusToDeactivePharSetupObatDetail(ubahHarga);
+                    var updateDetail = await this._dao.UpdatePharSetupObatDetail(paramUpdate);
 
-                    if (stopHargaAktif <= 0)
+                    if (updateDetail <= 0)
                     {
-                        throw new Exception("Gagal menonaktifkan harga sebelumnya");
+                        this._db.rollBackTrans();
+                        return (false, 0, $"Gagal merubah data");
                     }
                 }
-
-                //rumus harga jual
-                data.harga_jual_apotek = data.harga_netto_apotek
-                    + (data.prosentase_profit / 100 * data.harga_netto_apotek)
-                    + (data.prosentase_ppn / 100 * (data.harga_netto_apotek + (data.prosentase_profit / 100 * data.harga_netto_apotek)));
-
-                var headerId = await this._dao.AddPharSetupObatDetail(data);
-
-                if (headerId <= 0)
+                else
                 {
-                    if (cekHargaAktif is not null)
+
+                    headerId = await this._dao.AddPharSetupObatDetail(data);
+
+                    if (headerId <= 0)
                     {
-                        throw new Exception("Gagal merubah harga sebelumnya");
+                        this._db.rollBackTrans();
+                        return (false, 0, $"Gagal menambahkan harga jual");
                     }
                 }
+
+                ////rumus harga jual
+                //data.harga_jual_apotek = data.harga_netto_apotek 
+                //    + (data.prosentase_profit/100 * data.harga_netto_apotek) 
+                //    + (data.prosentase_ppn/100 * (data.harga_netto_apotek + (data.prosentase_profit/100 * data.harga_netto_apotek)));
+
 
                 this._db.commitTrans();
-                return headerId;
+                return (true, headerId, "SUCCESS");
             }
             catch (Exception)
             {

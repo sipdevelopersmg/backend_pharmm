@@ -108,6 +108,7 @@ namespace Pharmm.API
             //});
 
             services.AddServices(Configuration);
+            services.AddServiceLaporan(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

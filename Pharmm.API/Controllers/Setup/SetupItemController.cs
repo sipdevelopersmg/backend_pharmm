@@ -548,13 +548,13 @@ namespace Pharmm.API.Controllers.Setup
             {
                 param.user_created = (short)HttpContext.Items["userId"];
 
-                var result = await this._obatService.AddPharSetupObatDetail(param);
+                (bool result,long id,string msg) = await this._obatService.AddPharSetupObatDetail(param);
                 _logger.LogInformation("save data {0}", param);
 
-                if (result > 0)
+                if (result)
                 {
                     return Ok(ResponseHelper.GetResponse(
-                            _data: result,
+                            _data: id,
                             _responseResult: true,
                             _message: "Data berhasil disimpan"
                         ));
@@ -563,7 +563,7 @@ namespace Pharmm.API.Controllers.Setup
 
                 return Ok(ResponseHelper.GetResponse(
                     _data: 0,
-                    _message: "Data gagal disimpan"
+                    _message: msg
                 ));
 
 

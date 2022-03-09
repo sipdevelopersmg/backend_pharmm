@@ -159,8 +159,8 @@ namespace Pharmm.API.Models.Setup
         public decimal? prosentase_profit { get; set; } //numeric()
         public decimal? prosentase_ppn { get; set; } //numeric()
         public decimal? harga_jual_apotek { get; set; } //numeric()
-        public DateTime? tgl_berlaku { get; set; } //date()
-        internal DateTime? tgl_berakhir { get; set; } //date()
+        public DateTime tgl_berlaku { get; set; } //date()
+        public DateTime? tgl_berakhir { get; set; } //date()
         internal short? user_created { get; set; } //smallint()
 
     }
@@ -173,7 +173,7 @@ namespace Pharmm.API.Models.Setup
         public decimal? prosentase_profit { get; set; } //numeric()
         public decimal? prosentase_ppn { get; set; } //numeric()
         internal decimal? harga_jual_apotek { get; set; } //numeric()
-        public DateTime? tgl_berlaku { get; set; } //date()
+        public DateTime tgl_berlaku { get; set; } //date()
         internal DateTime? tgl_berakhir { get; set; } //date()
         internal short? user_created { get; set; } //smallint()
 
@@ -185,6 +185,18 @@ namespace Pharmm.API.Models.Setup
         public long? id_obat_detail { get; set; } //bigint()
         internal DateTime? tgl_berakhir { get; set; } //date()
         internal short? user_edited { get; set; } //integer()
+
+    }
+
+    public record phar_setup_obat_detail_update
+    {
+
+        public long id_obat_detail { get; set; } //bigint()
+        public decimal? harga_netto_apotek { get; set; } //numeric()
+        public decimal? prosentase_profit { get; set; } //numeric()
+        public decimal? prosentase_ppn { get; set; } //numeric()
+        public decimal harga_jual_apotek { get; set; } //numeric()
+        internal short? user_edited { get; set; } //smallint()
 
     }
 
