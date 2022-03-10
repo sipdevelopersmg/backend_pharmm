@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Pharmm.API.Dao;
 using Pharmm.API.Dao.Setup;
 using Pharmm.API.Dao.Transaksi;
+using Pharmm.API.Dao.Utility;
 using Pharmm.API.Helper;
 using Pharmm.API.Services;
 using Pharmm.API.Services.Setup;
@@ -200,6 +201,12 @@ namespace Pharmm.API.ServiceCollections
 
             services.AddScoped<TransHutangSupplierDao>();
             services.AddScoped<TransPiutangSupplierDao>();
+
+            #endregion
+
+            #region Utility
+
+            services.AddScoped<UtilityDao>();
 
             #endregion
         }

@@ -6,15 +6,62 @@ using System.Text.RegularExpressions;
 using Utility.ErrorResponse.Helper;
 using Utility.OKResponse.Helper;
 using Pharmm.API.Helper;
+using Pharmm.API.Dao.Utility;
 
 namespace Utility.Validation.Filter
 {
     public class ErrorValidationFilter : IExceptionFilter, IActionFilter
     {
+        private readonly UtilityDao _utility;
+        public ErrorValidationFilter(UtilityDao utility)
+        {
+            this._utility = utility;
+        }
+
         public void OnException(ExceptionContext context)
         {
             var ex = context.Exception;
-            context.Result = new BadRequestObjectResult(ErrorHelper.GetErrorResponse(ex));
+
+            //jika exception message bukan unique 
+            if (!ErrorHelper.GetErrorResponse(ex).data.OutMessage.ToLower().Contains("[unique]"))
+            {
+                context.Result = new BadRequestObjectResult(ErrorHelper.GetErrorResponse(ex));
+            }
+            else
+            {
+                var error = ErrorHelper.GetErrorResponse(ex);
+
+                //format = [UNIQUE] Data ini sudah ada : CONSTRAINT_NAME
+                string validatorMessage = error.data.OutMessage;
+                string constName = validatorMessage.Split(':')[1].Trim();
+
+                var fieldConstraints = this._utility.GetFieldConstraint(constName).Result;
+
+                string msg = "[UNIQUE] Data dengan ";
+
+                if (fieldConstraints.Count > 0)
+                {
+                    foreach (var field in fieldConstraints)
+                    {
+                        msg += $"{field.column_name} dan ";
+                    }
+
+                    msg = msg.Remove(msg.LastIndexOf("dan")).TrimEnd() + " ini sudah ada";
+
+                }
+                else
+                {
+                    msg = error.data.OutMessage;
+                }
+
+                context.Result = new OkObjectResult(new
+                {
+
+                    responseResult = false,
+                    data = msg,
+                    message = "validasi gagal"
+                });
+            }
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
@@ -30,7 +77,7 @@ namespace Utility.Validation.Filter
                 {
                     foreach (var t in errors)
                     {
-                        string message = GenerateErrorMessage(key,t.ErrorMessage);
+                        string message = GenerateErrorMessage(key, t.ErrorMessage);
                         validatorModel.Add(message);
                     }
 

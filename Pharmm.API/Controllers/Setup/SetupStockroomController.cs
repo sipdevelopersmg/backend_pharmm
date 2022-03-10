@@ -5,6 +5,7 @@ using Pharmm.API.Models;
 using Pharmm.API.Models.Setup;
 using Pharmm.API.Services;
 using Pharmm.API.Services.Setup;
+using QueryModel.Model;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,42 @@ namespace Pharmm.API.Controllers.Setup
             try
             {
                 var result = await this._service.GetAllMmSetupStockroom();
+
+                if (result.Count > 0)
+                {
+                    return Ok(ResponseHelper.GetResponse(
+                        _data: result,
+                        _responseResult: true,
+                        _message: ""
+                    ));
+                }
+
+
+                return Ok(ResponseHelper.GetResponse(
+                    _data: new List<mm_setup_stockroom>(),
+                    _message: "data tidak ditemukan",
+                    _responseResult: true
+                ));
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseModel<List<mm_setup_stockroom>>))]
+        [SwaggerOperation(summary: "untuk mendapatkan data mm_setup_stockroom by dynamic filter",
+            description: "prefix mm_setup_stockroom mss(id_stockroom,kode_stockroom,nama_stockroom, <br>" +
+            "mm_setup_tipe_stockroom msts (id_tipe_stockroom,tipe_stockroom))")]
+        public async Task<IActionResult> GetAllByParams([FromBody]List<ParameterSearchModel> param)
+        {
+
+            try
+            {
+                var result = await this._service.GetAllMmSetupStockroomByParams(param);
 
                 if (result.Count > 0)
                 {

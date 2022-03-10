@@ -17,6 +17,8 @@ namespace Pharmm.API.Services.Setup
 
         Task<short>AddAkunSetupGrupCoa(akun_setup_grup_coa_insert data);
         Task<short>UpdateAkunSetupGrupCoa(akun_setup_grup_coa data);
+        Task<short> UpdateToActiveAkunSetupGrupCoa(short _id_grup_coa);
+        Task<short> UpdateToDeActiveAkunSetupGrupCoa(short _id_grup_coa);
         Task<short>DeleteAkunSetupGrupCoa(Int16 id_grup_coa);
 
     }
@@ -96,6 +98,32 @@ namespace Pharmm.API.Services.Setup
             {
                 throw;
                 //TODO : log error
+            }
+        }
+
+        public async Task<short> UpdateToDeActiveAkunSetupGrupCoa(short _id_grup_coa)
+        {
+            try
+            {
+                return await this._dao.UpdateToDeActiveAkunSetupGrupCoa(_id_grup_coa);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<short> UpdateToActiveAkunSetupGrupCoa(short _id_grup_coa)
+        {
+            try
+            {
+                return await this._dao.UpdateToActiveAkunSetupGrupCoa(_id_grup_coa);
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 

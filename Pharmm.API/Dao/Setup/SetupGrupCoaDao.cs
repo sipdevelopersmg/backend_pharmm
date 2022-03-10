@@ -99,6 +99,38 @@ namespace Pharmm.API.Dao.Setup
             }
         }
 
+        public async Task<short> UpdateToActiveAkunSetupGrupCoa(short _id_grup_coa)
+        {
+            try
+            {
+                return await this.db.executeScalarSp<short>("akun_setup_grup_coa_update_to_active",
+                    new
+                    {
+                        _id_grup_coa
+                    });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<short> UpdateToDeActiveAkunSetupGrupCoa(short _id_grup_coa)
+        {
+            try
+            {
+                return await this.db.executeScalarSp<short>("akun_setup_grup_coa_update_to_deactive",
+                    new
+                    {
+                        _id_grup_coa
+                    });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<short> DeleteAkunSetupGrupCoa(Int16 id_grup_coa)
         {
             try

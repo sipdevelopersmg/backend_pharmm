@@ -42,7 +42,8 @@ namespace Pharmm.API
 
             services.AddControllers(config =>
             {
-                config.Filters.Add(new ErrorValidationFilter());
+                config.Filters.Add<ErrorValidationFilter>();
+                //config.Filters.Add(new ErrorValidationFilter());
             })
                 .AddNewtonsoftJson()
                 .AddFluentValidation(options =>

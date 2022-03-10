@@ -220,6 +220,73 @@ namespace Pharmm.API.Controllers.Setup
             }
         }
 
+        [HttpPut("{id_grup_coa}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseModel<string>))]
+        [SwaggerOperation(summary: "untuk update data grup coa to active")]
+        public async Task<IActionResult> UpdateToActive([FromRoute]short id_grup_coa)
+        {
+            try
+            {
+                var result = await this._service.UpdateToActiveAkunSetupGrupCoa(id_grup_coa);
+                _logger.LogInformation("update status to active data {0}", id_grup_coa);
+
+                if (result > 0)
+                {
+                    return Ok(ResponseHelper.GetResponse(
+                        _data: "",
+                        _responseResult: true,
+                        _message: "Data sukses diupdate"));
+
+                }
+
+                return Ok(ResponseHelper.GetResponse(
+                    _data: "",
+                    _message: "Data gagal diupdate"
+                ));
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "data {0}", id_grup_coa);
+                throw;
+            }
+        }
+
+
+        [HttpPut("{id_grup_coa}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseModel<string>))]
+        [SwaggerOperation(summary: "untuk update data grup coa to deactive")]
+        public async Task<IActionResult> UpdateToDeActive([FromRoute] short id_grup_coa)
+        {
+            try
+            {
+                var result = await this._service.UpdateToDeActiveAkunSetupGrupCoa(id_grup_coa);
+                _logger.LogInformation("update status to deactive data {0}", id_grup_coa);
+
+                if (result > 0)
+                {
+                    return Ok(ResponseHelper.GetResponse(
+                        _data: "",
+                        _responseResult: true,
+                        _message: "Data sukses diupdate"));
+
+                }
+
+                return Ok(ResponseHelper.GetResponse(
+                    _data: "",
+                    _message: "Data gagal diupdate"
+                ));
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "data {0}", id_grup_coa);
+                throw;
+            }
+        }
+
         [HttpDelete("{id_grup_coa}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseModel<string>))]
         [SwaggerOperation(summary: "untuk delete data akun_setup_grup_coa")]

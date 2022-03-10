@@ -12,6 +12,7 @@ namespace Pharmm.API.Models.Setup
         public Int16? id_grup_coa { get; set; } //smallint()
         public string grup_coa { get; set; } //character varying(20)
         public string deskripsi { get; set; } //character varying(100)
+        public bool is_active { get; set; } //bool
 
     }
 
@@ -21,6 +22,7 @@ namespace Pharmm.API.Models.Setup
 
         public string grup_coa { get; set; } //character varying(20)
         public string deskripsi { get; set; } //character varying(100)
+        public bool is_active { get; set; } //bool
 
     }
 
