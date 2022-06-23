@@ -1,7 +1,2 @@
 juka pakai VSCODE pertama jalankan
-
 dotnet restore Pharmm.API.csproj 
-
-di terminal
-
-testing ya
