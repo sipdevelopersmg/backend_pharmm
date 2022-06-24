@@ -58,7 +58,7 @@ namespace Pharmm.API.Controllers.Transaksi
                     notin = "msi.id_item NOT IN ("+param.notin+") AND";
                 }
                 
-                var result = await this._itemservice.GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(_id_supplier, param.filter, notin);
+                var result = await this._itemservice.GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(_id_supplier, param.filters, notin);
 
                 if (!result.Any())
                 {

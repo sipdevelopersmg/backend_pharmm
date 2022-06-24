@@ -114,7 +114,7 @@ namespace Pharmm.API.Models.Transaksi
     public record get_barang_input_harga_order_by_id_supplier
     {
         public string notin { get; set; }
-        public List<ParameterSearchModel> filter {get;set;}
+        public List<ParameterSearchModel> filters {get;set;}
     }
     #endregion
 }
