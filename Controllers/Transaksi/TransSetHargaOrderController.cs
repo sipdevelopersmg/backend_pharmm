@@ -48,12 +48,17 @@ namespace Pharmm.API.Controllers.Transaksi
             "mm_setup_pabrik msp (kode_pabrik,nama_pabrik,alamat_pabrik), <br>" +
             "mm_setup_satuan mss (kode_satuan,nama_satuan), <br>" +
             "mm_setup_temperatur_item msti (temperatur_item)")]
-        public async Task<IActionResult> GetBarangForLookupInputHargaOrderByIdSupplierAndParams(short _id_supplier, [FromBody] List<ParameterSearchModel> param)
+        public async Task<IActionResult> GetBarangForLookupInputHargaOrderByIdSupplierAndParams(short _id_supplier, [FromBody] get_barang_input_harga_order_by_id_supplier param)
         {
 
             try
-            {
-                var result = await this._itemservice.GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(_id_supplier, param);
+            {   
+                var notin = "";
+                if(param.notin!=""){
+                    notin = "msi.id_item NOT IN ("+param.notin+") AND";
+                }
+                
+                var result = await this._itemservice.GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(_id_supplier, param.filter, notin);
 
                 if (!result.Any())
                 {

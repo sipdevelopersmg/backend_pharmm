@@ -133,10 +133,18 @@ namespace Pharmm.API.Services.Transaksi
                         foreach (var detail in data.details)
                         {
                             detail.set_harga_order_id = hargaOrderId;
+                            detail.tanggal_berlaku = data.tanggal_berlaku;
                             
+                            // update berlaku sebelumnya jadi non aktif
+                            var parameter_updateBerlaku = new set_harga_order_detail_update_berlaku {
+                                id_item = detail.id_item,
+                                tanggal_berakhir = data.tanggal_berlaku
+                            };
+
+                            short updateBerlaku = await this._dao.UpdateBerlakuSetHargaOrderDetail(parameter_updateBerlaku);
+
                             //input detail
                             hargaOrderDetailId = await this._dao.AddSetHargaOrderDetail(detail);
-
 
                             //cek jika gagal input detail, maka rollback
                             if(hargaOrderDetailId <= 0)

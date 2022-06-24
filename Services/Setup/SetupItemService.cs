@@ -14,7 +14,7 @@ namespace Pharmm.API.Services.Setup
 
         Task<List<mm_setup_item_with_stok>> GetAllMmSetupItemByIdStockroomAndParams(short id_stockroom, List<ParameterSearchModel> param);
         Task<List<mm_setup_item>> GetAllMmSetupItemByParams(List<ParameterSearchModel> param);
-        Task<List<mm_setup_item>> GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(Int16 _id_supplier, List<ParameterSearchModel> param);
+        Task<List<mm_setup_item>> GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(Int16 _id_supplier, List<ParameterSearchModel> param, string notin);
         Task<List<mm_setup_item>> GetAllMmSetupItem();
         Task<mm_setup_item> GetMmSetupItemById(int id_item);
 
@@ -89,11 +89,11 @@ namespace Pharmm.API.Services.Setup
             }
         }
 
-        public async Task<List<mm_setup_item>> GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(short _id_supplier, List<ParameterSearchModel> param)
+        public async Task<List<mm_setup_item>> GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(short _id_supplier, List<ParameterSearchModel> param, string notin)
         {
             try
             {
-                return await this._dao.GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(_id_supplier, param);
+                return await this._dao.GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(_id_supplier, param, notin);
             }
             catch (Exception)
             {

@@ -82,6 +82,14 @@ namespace Pharmm.API.Models.Transaksi
         public decimal? disc_prosentase_1 { get; set; } //numeric()
         public decimal? disc_prosentase_2 { get; set; } //numeric()
         public decimal? harga_order_netto { get; set; } //numeric()
+        public DateTime? tanggal_berlaku { get; set; } //date()
+    }
+
+    public record set_harga_order_detail_update_berlaku
+    {
+        public int? id_item { get; set; } //integer()
+        public DateTime? tanggal_berakhir { get; set; } //date()
+    
     }
 
     public record set_harga_order_detail_berlaku
@@ -101,6 +109,12 @@ namespace Pharmm.API.Models.Transaksi
         public Decimal diskon1_baru { get; set; }
         public Decimal diskon2_baru { get; set; }
         public Decimal harga_order_netto_baru { get; set; }
+    }
+
+    public record get_barang_input_harga_order_by_id_supplier
+    {
+        public string notin { get; set; }
+        public List<ParameterSearchModel> filter {get;set;}
     }
     #endregion
 }

@@ -127,6 +127,24 @@ namespace Pharmm.API.Dao.Transaksi
                 throw;
             }
         }
+
+        public async Task<short> UpdateBerlakuSetHargaOrderDetail(set_harga_order_detail_update_berlaku data)
+        {
+            try
+            {
+                return await this.db.executeScalarSp<Int16>("set_harga_order_detail_update_berlaku",
+                    new
+                    {
+                        _id_item = data.id_item,
+                        _tanggal_berakhir = data.tanggal_berakhir,
+                    });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<short> AddSetHargaOrderDetail(set_harga_order_detail_insert data)
         {
             try
@@ -140,7 +158,8 @@ namespace Pharmm.API.Dao.Transaksi
                         _harga_order = data.harga_order,
                         _disc_prosentase_1 = data.disc_prosentase_1,
                         _disc_prosentase_2 = data.disc_prosentase_2,
-                        _harga_order_netto = data.harga_order_netto
+                        _harga_order_netto = data.harga_order_netto,
+                        _tanggal_berlaku = data.tanggal_berlaku,
                     });
             }
             catch (Exception)

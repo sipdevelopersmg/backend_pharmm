@@ -89,7 +89,7 @@ namespace Pharmm.API.Dao.Setup
             }
         }
 
-        public async Task<List<mm_setup_item>> GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(Int16 _id_supplier, List<ParameterSearchModel> param)
+        public async Task<List<mm_setup_item>> GetAllMmSetupItemBelumSettingHargaOrderByIdSupplierAndParams(Int16 _id_supplier, List<ParameterSearchModel> param, string _notin)
         {
             var _filters = string.Empty;
             try
@@ -99,8 +99,9 @@ namespace Pharmm.API.Dao.Setup
                 return await this.db.QuerySPtoList<mm_setup_item>("mm_setup_item_belum_set_harga_order_by_idsupplier_dynamicfilter",
                     new
                     {
-                        _id_supplier, // smallint not null
-                        _filters      // not null
+                        _id_supplier = _id_supplier, // smallint not null
+                        _filters,      // not null
+                        _not_in = _notin
                     });
             }
             catch (Exception)
