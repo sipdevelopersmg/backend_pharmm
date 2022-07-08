@@ -35,6 +35,39 @@ namespace Pharmm.API.Controllers.Setup
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseModel<List<akun_setup_coa>>))]
         [SwaggerOperation(summary: "untuk mendapatkan data akun_setup_coa by dynamic filter (gunakan array kosong [] untuk get all data)", 
             description: "prefix akun_setup_coa = asc, field = id_coa_parent, id_grup_coa, kode_coa, deskripsi, is_active, user_created ")]
+        public async Task<IActionResult> GetAllByParamsTriasGanteng([FromBody] List<ParameterSearchModel> param)
+        {
+
+            try
+            {
+                var result = await this._service.GetAllAkunSetupCoaByParams(param);
+
+                if (!result.Any())
+                {
+                    return Ok(ResponseHelper.GetResponse(
+                         _data: new List<akun_setup_coa>(),
+                         _responseResult: true,
+                         _message: "data tidak ditemukan"
+                         ));
+                }
+
+                return Ok(ResponseHelper.GetResponse(
+                    _data: result,
+                    _responseResult: true
+                ));
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseModel<List<akun_setup_coa>>))]
+        [SwaggerOperation(summary: "untuk mendapatkan data akun_setup_coa by dynamic filter (gunakan array kosong [] untuk get all data)", 
+            description: "prefix akun_setup_coa = asc, field = id_coa_parent, id_grup_coa, kode_coa, deskripsi, is_active, user_created ")]
         public async Task<IActionResult> GetAllByParams([FromBody] List<ParameterSearchModel> param)
         {
 
