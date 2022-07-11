@@ -20,17 +20,32 @@ namespace Pharmm.API
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             .UseSerilog((context, configuration) =>
-            {
-                configuration.Enrich.FromLogContext()
-                    .WriteTo.Logger(lc =>
-                        lc.WriteTo.Seq("http://seq:5341")
-                    // lc.WriteTo.Seq("http://174.138.22.139:5341")
-                    )
-                    //.Filter.ByIncludingOnly("@Level in ['Info','Warning', 'Error', 'Fatal']")
-                    //.Filter.ByExcluding("StartsWith(SourceContext, 'Microsoft')")
-                    .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
-                    .ReadFrom.Configuration(context.Configuration);
-            })
+                {
+                    configuration.Enrich.FromLogContext().MinimumLevel.Debug()
+                        .WriteTo.Logger(lc => lc.WriteTo.Console())
+
+                        //.Filter.ByIncludingOnly("@Level in [''Debug,'Info','Warning', 'Error', 'Fatal']")
+                        //.Filter.ByExcluding("StartsWith(SourceContext, 'Microsoft')")
+                        .Filter.ByExcluding("RequestPath in ['/health']")
+                        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
+                        .ReadFrom.Configuration(context.Configuration);
+                })
+                
+                //mengarahkan log ke datalust seq 
+                //dan mengecualikan /health untuk healthcheck docker swarm
+                .UseSerilog((context, configuration) =>
+                {
+                    configuration.Enrich.FromLogContext()
+                        .WriteTo.Logger(lc =>
+                            lc.WriteTo.Seq("http://seq:5341")
+                            // lc.WriteTo.Seq("http://174.138.22.139:5341")
+                        )
+                        //.Filter.ByIncludingOnly("@Level in ['Debug','Info','Warning', 'Error', 'Fatal']")
+                        //.Filter.ByExcluding("StartsWith(, 'Microsoft')")
+                        .Filter.ByExcluding("RequestPath in ['/health']")
+                        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
+                        .ReadFrom.Configuration(context.Configuration);
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
